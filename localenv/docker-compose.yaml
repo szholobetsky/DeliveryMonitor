@@ -1,0 +1,38 @@
+services:
+
+  db:
+    image: mysql
+    # NOTE: use of "mysql_native_password" is not recommended: https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password
+    # (this is just an example, not intended to be a production configuration)
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8081
+      
+  jenkins:
+    image: jenkins/jenkins:lts
+    privileged: true
+    user: root
+    ports:
+     - 8080:8082
+     - 50000:50000
+    container_name: jenkins
+    volumes:
+     - /home/szholobetskyi/jenkins_compose/jenkins_configuration:/var/jenkins_home
+     - /var/run/docker.sock:/var/run/docker.sock
+      
+  activemq:
+    image: symptoma/activemq:latest
+    container_name: ‘activemq’
+    ports:
+     - "61616:61616" 
+     - "8161:8161"
+    volumes:
+     - /home/szholobetskyi/j/Documents/data/activemq/data:/data/activemq
+     - /home/szholobetskyi/j/Documents/data/activemq/log:/var/log/activemq
