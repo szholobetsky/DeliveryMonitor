@@ -1,0 +1,39 @@
+services:
+
+  db:
+    image: mysql
+    ports:
+     - 3306:3306
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+    volumes:
+     - "./mysql:/docker-entrypoint-initdb.d"      
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8081:8080
+      
+  jenkins:
+    image: jenkins/jenkins:lts
+    privileged: true
+    user: root
+    ports:
+     - 8082:8080
+     - 50000:50000
+    container_name: jenkins
+    volumes:
+     - /home/szholobetskyi/jenkins_compose/jenkins_configuration:/var/jenkins_home
+     - /var/run/docker.sock:/var/run/docker.sock
+      
+  activemq:
+    image: symptoma/activemq:latest
+    container_name: activemq
+    ports:
+     - "61616:61616" 
+     - "8161:8161"
+    volumes:
+     - /home/szholobetskyi/j/Documents/data/activemq/data:/data/activemq
+     - /home/szholobetskyi/j/Documents/data/activemq/log:/var/log/activemq
