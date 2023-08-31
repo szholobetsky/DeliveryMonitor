@@ -26,25 +26,28 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 
+import org.json.JSONObject;
+
 
 import org.springframework.stereotype.Component;
+
+import com.delivery.monitor.model.ActiveDeliveryRange;
+
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
 public class TrackerConnector {
 	
-	public void getDeliveriesBound() throws IOException {
-
-		
+	public ActiveDeliveryRange getDeliveriesRange(String tracker) throws IOException {
+        ActiveDeliveryRange range = new ActiveDeliveryRange();
         CloseableHttpClient httpClient = HttpClients.createDefault();
 
         try {
 
-            HttpGet request = new HttpGet("https://172./activedelivery");
+            HttpGet request = new HttpGet(tracker+"/activedelivery");
             // add request headers
-            request.addHeader("custom-key", "mkyong");
-            request.addHeader(HttpHeaders.USER_AGENT, "Googlebot");
+            // request.addHeader("custom-key", "mykey");
 
             CloseableHttpResponse response = httpClient.execute(request);
 
@@ -59,8 +62,16 @@ public class TrackerConnector {
                 HttpEntity entity = response.getEntity();
                 if (entity != null) {
                     // return it as a String
-                    String result = EntityUtils.toString(entity);
-                    System.out.println(result);
+                    String result = EntityUtils.toString(entity); // {minId: 10; maxId:100}
+                    JSONObject jsonObject = new JSONObject(result);
+
+                    int minId = jsonObject.getInt("minId");
+                    int maxId = jsonObject.getInt("maxId");
+                    
+
+                    range.setMinId(minId);
+                    range.setMaxId(maxId);
+                    return range;
                 }
 
             } finally {
@@ -69,15 +80,11 @@ public class TrackerConnector {
         } finally {
             httpClient.close();
         }
-
+        return range;
     }
 
 	
-	public void postUpdate() {
-	
-	}
-	
-	public void putNewDeliveries() {
+	public void postUpdate(String tracker, List deliveries) {
 		
 	}
 		

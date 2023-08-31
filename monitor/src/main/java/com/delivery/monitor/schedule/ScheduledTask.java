@@ -1,4 +1,4 @@
-package com.delivery.monitor.scheduled;
+package com.delivery.monitor.schedule;
 
 import java.util.concurrent.TimeUnit;
 
@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class scheduledTask {
+public class ScheduledTask {
 
 	@Autowired 
 	MonitorService monitorService;
