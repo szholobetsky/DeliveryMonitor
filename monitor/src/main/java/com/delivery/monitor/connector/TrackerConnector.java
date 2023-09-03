@@ -27,6 +27,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 
 import org.json.JSONObject;
+import org.json.JSONArray;
 
 
 import org.springframework.stereotype.Component;
@@ -82,47 +83,17 @@ public class TrackerConnector {
         }
         return range;
     }
-
-	
-	public void postUpdate(String tracker, List deliveries) {
-		
-	}
-		
-    private static String sendPOST(String url) throws IOException {
-
-        String result = "";
-        HttpPost post = new HttpPost(url);
-
-        // add request parameters or form parameters
-        List<NameValuePair> urlParameters = new ArrayList<>();
-        urlParameters.add(new BasicNameValuePair("username", "abc"));
-        urlParameters.add(new BasicNameValuePair("password", "123"));
-        urlParameters.add(new BasicNameValuePair("custom", "secret"));
-
-        post.setEntity(new UrlEncodedFormEntity(urlParameters));
-
-        try (CloseableHttpClient httpClient = HttpClients.createDefault();
-             CloseableHttpResponse response = httpClient.execute(post)){
-
-            result = EntityUtils.toString(response.getEntity());
-        }
-
-        return result;
-    }
     
-    private static String sendPOSTJson(String url) throws IOException {
+    public String sendDeliveriesToTracker(String trackerUrl, List deliveries) throws IOException {
 
         String result = "";
-        HttpPost post = new HttpPost(url);
+        HttpPost post = new HttpPost(trackerUrl);
 
-        StringBuilder json = new StringBuilder();
-        json.append("{");
-        json.append("\"name\":\"mkyong\",");
-        json.append("\"notes\":\"hello\"");
-        json.append("}");
+        JSONArray jsonArray = new JSONArray(deliveries);
+        
 
         // send a JSON data
-        post.setEntity(new StringEntity(json.toString()));
+        post.setEntity(new StringEntity(jsonArray.toString()));
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault();
              CloseableHttpResponse response = httpClient.execute(post)) {
@@ -133,7 +104,7 @@ public class TrackerConnector {
         return result;
     }
     
-    public static void PostWithBasicAuth(String[] args) throws IOException {
+    public void PostWithBasicAuth(String[] args) throws IOException {
 
         HttpGet request = new HttpGet("http://localhost:8080/books");
 

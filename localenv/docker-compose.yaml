@@ -51,3 +51,8 @@ services:
       - 2380:2380
     networks:
       - etcd-net
+      
+  zookeeper:
+    image: 'bitnami/zookeeper:latest'
+    ports:
+      - '2181:2181'

@@ -1,8 +1,5 @@
 package com.delivery.monitor.model;
 
-import lombok.Getter;
-import lombok.Setter;
-
 public class ActiveDeliveryRange {
 
 		private Integer minId = 0; 
@@ -19,6 +16,5 @@ public class ActiveDeliveryRange {
 		}
 		public void setMaxId(Integer maxId) {
 			this.maxId = maxId;
-		}
-		
+		}		
 }

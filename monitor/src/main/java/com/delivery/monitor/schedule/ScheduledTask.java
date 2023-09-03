@@ -17,7 +17,7 @@ public class ScheduledTask {
 	@Autowired 
 	MonitorService monitorService;
 	
-	@Scheduled(fixedDelay = 300, timeUnit = TimeUnit.SECONDS)
+	@Scheduled(fixedDelayString = "${period.in.seconds}", timeUnit = TimeUnit.SECONDS)
 	public void runTask() {
 		monitorService.monitor();
 	}

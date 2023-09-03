@@ -16,10 +16,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class EtcdConnector {
 
+	private static final String ETCD_URL = "http://etcd:2379";
+	private static final String MONITOR = "monitor";
+	private static final String TRACKER = "tracker";
+	
     public void register() throws ExecutionException, InterruptedException {
 
-        Client client = Client.builder().endpoints("http://etcd:2379").build();
-        ByteSequence key_monitor = ByteSequence.fromString("monitor");
+        Client client = Client.builder().endpoints(ETCD_URL).build();
+        ByteSequence key_monitor = ByteSequence.fromString(MONITOR);
         ByteSequence value = ByteSequence.fromString("test_value");
 
         // put the key-value
@@ -32,9 +36,8 @@ public class EtcdConnector {
 
     public List<String> getTrackers() throws ExecutionException, InterruptedException {
     	List<String> result = new ArrayList<String>();
-        Client client = Client.builder().endpoints("http://etcd:2379").build();
-        ByteSequence key_tracker = ByteSequence.fromString("tracker");
-        ByteSequence value = ByteSequence.fromString("test_value");
+        Client client = Client.builder().endpoints(ETCD_URL).build();
+        ByteSequence key_tracker = ByteSequence.fromString(TRACKER);
 
         // put the key-value
         KV kvClient=client.getKVClient();

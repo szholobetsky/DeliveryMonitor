@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.delivery.monitor.connector.EtcdConnector;
 import com.delivery.monitor.connector.TrackerConnector;
+import com.delivery.monitor.connector.ZooKeeperConnector;
 import com.delivery.monitor.model.ActiveDeliveryRange;
 import com.delivery.monitor.repository.DeliveryRepository;
 import com.delivery.monitor.model.Delivery;
@@ -32,8 +33,12 @@ public class MonitorService {
 	@Autowired
 	DeliveryRepository deliveryRepository;
 	
+	// TODO delete when finish ZooKeper integration
+	// @Autowired
+	// EtcdConnector etcdConnector;
+	
 	@Autowired
-	EtcdConnector etcdConnector;
+	ZooKeeperConnector zooKeeperConnector;
 	
 	private static final Logger log = LoggerFactory.getLogger(MonitorService.class);
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
@@ -43,7 +48,9 @@ public class MonitorService {
 	public void monitor() {
 		try {
 			// get trackers instances 
-			List<String> trackers = etcdConnector.getTrackers();
+			// TODO delete when finish ZooKeper integration
+			// List<String> trackers = etcdConnector.getTrackers();
+			List<String> trackers = zooKeeperConnector.getTrackers();
 			if (trackers.size() == 0) {
 				log.error("No trackers registered yet");
 				return;
@@ -65,18 +72,18 @@ public class MonitorService {
 			
 			// send all selected deliveries to tracker for update local track db
 			for(String tracker:trackers) { 
-				trackerConnector.postUpdate(tracker,deliveries);
+				trackerConnector.sendDeliveriesToTracker(tracker,deliveries);
 			}
 			log.info("The time is now {}", dateFormat.format(new Date()));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			log.error(e.getMessage());
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			log.error(e.getMessage());
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			log.error(e.getMessage());
-		}
+		} 
+		// TODO delete when finish ZooKeper integration
+		/*
+		 * catch (ExecutionException e) { // TODO Auto-generated catch block
+		 * log.error(e.getMessage()); } catch (InterruptedException e) { // TODO
+		 * Auto-generated catch block log.error(e.getMessage()); }
+		 */
 	}
 }
